@@ -46,6 +46,6 @@ refer to a hotkey daemon such as `sxhkd
 Requirements
 ------------
 
-x-selection-pipe relies on Gtk+ 3, pygobject, and `python3-keybinder
+x-selection-pipe relies on Gtk+ 3, pycairo, pygobject, and `python3-keybinder
 <https://github.com/LiuLang/python3-keybinder>`__. It can be installed as
 customary, either by invoking ``setup.py``, or using ``pip``.
