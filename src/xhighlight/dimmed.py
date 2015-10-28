@@ -47,10 +47,10 @@ class Dimmed (Gtk.Window):
 
         self.show_all()
 
-        # Yikes. pycairo doesn’t seem to support interfacing Cairo regions with
-        # Gtk, so we hackishly set the input shape using native calls. This
-        # relies on __hash__ yielding the pointer to the native structure of Gdk
-        # windows.
+        # Make our window completely transparent to mouse events. pycairo
+        # doesn’t seem to support interfacing Cairo regions with Gtk, so we
+        # hackishly set the input shape using native calls. This relies on
+        # __hash__ yielding the pointer to the native structure of Gdk windows.
         libgdk = cdll.LoadLibrary('libgdk-3.so')
         libcairo = cdll.LoadLibrary('libcairo.so')
         window = self.get_window()
