@@ -7,7 +7,6 @@ from gi.repository import Gtk, Gdk
 from keybinder.keybinder_gtk import KeybinderGtk
 
 from xhighlight.dimmed import Dimmed
-from xhighlight.util import surround_region
 
 
 parser = argparse.ArgumentParser(
@@ -46,8 +45,8 @@ def console_entry():
 
     args = parser.parse_args()
 
-    for rect in surround_region(args.x, args.y, args.width, args.height):
-        Dimmed(*rect, opacity=args.opacity)
+    dimmed = Dimmed(opacity=args.opacity)
+    dimmed.add_clear(args.x, args.y, args.width, args.height)
 
     keybinder = KeybinderGtk()
     keybinder.register('<Ctrl>Escape', Gtk.main_quit)
