@@ -1,5 +1,7 @@
 import argparse
 import signal
+import re
+import sys
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -10,28 +12,14 @@ from xhighlight.dimmed import Dimmed
 
 
 parser = argparse.ArgumentParser(
-    description="Highlight a region of the screen."
-)
-
-parser.add_argument(
-    'x',
-    type=int,
-    help="x coordinate of the region’s upper left corner"
+    description="Highlight regions of the screen."
 )
 parser.add_argument(
-    'y',
-    type=int,
-    help="y coordinate of the region’s upper left corner"
-)
-parser.add_argument(
-    'width',
-    type=int,
-    help="Region width"
-)
-parser.add_argument(
-    'height',
-    type=int,
-    help="Region height"
+    'region_specs',
+    nargs='+',
+    type=str,
+    metavar='w×h+x+y',
+    help="A region specification (width×height+x+y)."
 )
 parser.add_argument(
     '--opacity', '-o',
@@ -41,12 +29,59 @@ parser.add_argument(
 )
 
 
+region_spec_re = re.compile(r"""
+    ^
+    (?P<width>\d+)
+    [×xX]
+    (?P<height>\d+)
+    \+
+    (?P<x>\d+)
+    \+
+    (?P<y>\d+)
+    $
+""", re.X)
+
+
+def parse_region_spec(region_spec):
+
+    parsed = region_spec_re.match(region_spec)
+
+    try:
+        return {
+            k: int(v)
+            for (k, v) in parsed.groupdict().items()
+        }
+
+    except (AttributeError, ValueError):
+        raise ValueError("Malformed region spec: %s" % region_spec)
+
+
 def console_entry():
 
     args = parser.parse_args()
 
+    regions = []
+    for region_spec in args.region_specs:
+
+        try:
+            region = parse_region_spec(region_spec)
+
+        except ValueError as exc:
+            print(exc, file=sys.stderr)
+            sys.exit(1)
+
+        else:
+            regions.append(region)
+
     dimmed = Dimmed(opacity=args.opacity)
-    dimmed.add_clear(args.x, args.y, args.width, args.height)
+    for region in regions:
+
+        dimmed.add_clear(
+            region['x'],
+            region['y'],
+            region['width'],
+            region['height']
+        )
 
     keybinder = KeybinderGtk()
     keybinder.register('<Ctrl>Escape', Gtk.main_quit)

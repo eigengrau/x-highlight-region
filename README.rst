@@ -1,7 +1,7 @@
 x-highlight-region
 ==================
 
-x-highlight-region dims everything but a selected region of the screen. It is
+x-highlight-region dims everything but selected regions of the screen. It is
 meant to be of use when giving presentations or when recording screencasts.
 `Demo video <https://youtu.be/t3xBhrYHJlI>`__.
 
@@ -14,24 +14,21 @@ x-highlight-region may be invoked as specified below. To disengage, press
 
 ::
 
-  usage: xhighlight [-h] [--opacity OPACITY] x y w h
+   usage: xhighlight [-h] [--opacity OPACITY] w×h+x+y [w×h+x+y ...]
 
-  Highlight a region of the screen.
+   Highlight regions of the screen.
 
-  positional arguments:
-    x                     x coordinate of the region’s upper left corner
-    y                     y coordinate of the region’s upper left corner
-    w                     Region width
-    h                     Region height
+   positional arguments:
+     w×h+x+y               A region specification (width×height+x+y).
 
-  optional arguments:
-    -h, --help            show this help message and exit
-    --opacity OPACITY, -o OPACITY
-                          Opacity of the dim overlay (0 ≤ o ≤ 1), where 1 is
-                          perfectly opaque.
+   optional arguments:
+     -h, --help            show this help message and exit
+     --opacity OPACITY, -o OPACITY
+                           Opacity of the dim overlay (0 ≤ o ≤ 1), where 1 is
+                           perfectly opaque.
 
 
-The region intended for highlighting can be conveniently selected using `slop
+Regions intended for highlighting can be conveniently selected using `slop
 <https://github.com/naelstrof/slop>`__:
 
 ::
