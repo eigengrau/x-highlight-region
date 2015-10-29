@@ -11,7 +11,7 @@ argparser.add_argument(
     'region_specs',
     nargs='*',
     type=str,
-    metavar='[r|e]w×h+x+y',
+    metavar='[r|e]W×H+X+Y',
     help=(
         "A region specification 'e' for ellipsoid highlights, 'r' for "
         "rectangular highlights. If the type is not supplied, assume 'r'."

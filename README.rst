@@ -14,12 +14,12 @@ x-highlight-region may be invoked as specified below. To disengage, press
 
 ::
 
-   usage: xhighlight [-h] [--opacity OPACITY] [[r|e]w×h+x+y [[r|e]w×h+x+y ...]]
+   usage: xhighlight [-h] [--opacity OPACITY] [[r|e]W×H+X+Y [[r|e]W×H+X+Y ...]]
 
    Highlight regions on the screen.
 
    positional arguments:
-     [r|e]w×h+x+y          A region specification 'e' for ellipsoid highlights,
+     [r|e]W×H+X+Y          A region specification 'e' for ellipsoid highlights,
                            'r' for rectangular highlights. If the type is not
                            supplied, assume 'r'.
 
