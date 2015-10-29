@@ -46,33 +46,32 @@ class Dimmed (Gtk.Window):
         self.set_focus_on_map(False)
         make_mouse_pass_through(self)
 
-        # We manage highlighted regions by masking out parts of a completely
-        # dimmed, screen-sized overlay.
-        overlay = Gtk.Fixed()
-        overlay.connect('draw', self._draw_dim)
-        self.add(overlay)
-        overlay.show_all()
-        make_mouse_pass_through(overlay)
-        self.overlay = overlay
+        # Keep state.
+        self._rectangles = []
         self.opacity = opacity
 
-    def add_clear(self, x, y, width, height):
-        """Clear a region."""
+        self.connect('draw', self._on_draw)
 
-        frame = Gtk.Frame()
-        frame.set_size_request(width, height)
-        frame.connect('draw', self._draw_clear)
-        self.overlay.put(frame, x, y)
-        frame.show_all()
-        make_mouse_pass_through(frame)
+    def _on_draw(self, _wid, ctx):
 
-    def _draw_dim(self, _wid, ctx):
+        ctx.save()
 
+        # Dim everything.
         ctx.set_source_rgba(0, 0, 0, self.opacity)
         ctx.set_operator(cairo.OPERATOR_SOURCE)
         ctx.paint()
 
-    def _draw_clear(self, _wid, ctx):
-
+        # Rectangular highlights.
         ctx.set_operator(cairo.OPERATOR_CLEAR)
-        ctx.paint()
+        for x, y, width, height in self._rectangles:
+
+            ctx.rectangle(x, y, width, height)
+            ctx.fill()
+
+        ctx.restore()
+
+    def add_clear(self, x, y, width, height):
+        """Highlight a rectangular region."""
+
+        self._rectangles.append((x, y, width, height))
+        self.queue_draw()
