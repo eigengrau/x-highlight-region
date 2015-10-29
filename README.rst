@@ -1,7 +1,7 @@
 x-highlight-region
 ==================
 
-x-highlight-region dims everything but selected regions of the screen. It is
+x-highlight-region dims everything but selected regions on the screen. It is
 meant to be of use when giving presentations or when recording screencasts.
 `Demo video <https://youtu.be/_-tczhQAHo0>`__.
 
@@ -16,7 +16,7 @@ x-highlight-region may be invoked as specified below. To disengage, press
 
    usage: xhighlight [-h] [--opacity OPACITY] [[r|e]w×h+x+y [[r|e]w×h+x+y ...]]
 
-   Highlight regions of the screen.
+   Highlight regions on the screen.
 
    positional arguments:
      [r|e]w×h+x+y          A region specification 'e' for ellipsoid highlights,

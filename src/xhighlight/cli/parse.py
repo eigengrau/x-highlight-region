@@ -4,7 +4,7 @@ import sys
 
 
 argparser = argparse.ArgumentParser(
-    description="Highlight regions of the screen."
+    description="Highlight regions on the screen."
 )
 
 argparser.add_argument(
