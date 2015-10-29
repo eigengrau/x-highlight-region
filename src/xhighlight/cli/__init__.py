@@ -1,47 +1,42 @@
+import os
 import signal
 import sys
+import time
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
+from gi.repository import GLib
 from keybinder.keybinder_gtk import KeybinderGtk
 
 from xhighlight.dimmed import Dimmed
-from xhighlight.cli.parse import argparser, parse_region_spec
+from xhighlight.cli.parse import argparser, parse_region_specs
+from xhighlight.cli.server import server
+from xhighlight.cli.client import client
 
 
 def console_entry():
 
     args = argparser.parse_args()
+    highlight_regions = parse_region_specs(args)
 
-    regions = []
-    for region_spec in args.region_specs:
+    control_path = os.path.join(
+        GLib.get_user_runtime_dir(),
+        'xhighlight-control'
+    )
 
-        try:
-            region = parse_region_spec(region_spec)
+    if os.path.exists(control_path):
 
-        except ValueError as exc:
-            print(exc, file=sys.stderr)
-            sys.exit(1)
+        client(control_path, highlight_regions)
+
+    else:
+
+        pid = os.fork()
+
+        if pid == 0:
+            server(control_path, args.opacity)
 
         else:
-            regions.append(region)
-
-    dimmed = Dimmed(opacity=args.opacity)
-    for region in regions:
-
-        dimmed.add_clear(
-            region['x'],
-            region['y'],
-            region['width'],
-            region['height']
-        )
-
-    keybinder = KeybinderGtk()
-    keybinder.register('<Ctrl>Escape', Gtk.main_quit)
-    keybinder.start()
-
-    # Work around bug 622084.
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
-
-    Gtk.main()
+            # Make sure the FIFO is created by the server, not the client.
+            while not os.path.exists(control_path):
+                time.sleep(0.1)
+            client(control_path, highlight_regions)

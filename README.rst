@@ -14,7 +14,7 @@ x-highlight-region may be invoked as specified below. To disengage, press
 
 ::
 
-   usage: xhighlight [-h] [--opacity OPACITY] w×h+x+y [w×h+x+y ...]
+   usage: xhighlight [-h] [--opacity OPACITY] [w×h+x+y [w×h+x+y ...]]
 
    Highlight regions of the screen.
 
@@ -38,6 +38,10 @@ Regions intended for highlighting can be conveniently selected using `slop
 To conventiently trigger highlighting via a global keyboard-shortcut, please
 refer to a hotkey daemon such as `sxhkd
 <https://github.com/baskerville/sxhkd>`__.
+
+Regions can be selected incrementally. When the first invocation has not been
+disengaged, further calls to `xhighlight` will add new highlighted regions to
+earlier ones.
 
 
 Requirements

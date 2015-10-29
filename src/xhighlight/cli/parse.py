@@ -1,5 +1,6 @@
 import argparse
 import re
+import sys
 
 
 argparser = argparse.ArgumentParser(
@@ -8,7 +9,7 @@ argparser = argparse.ArgumentParser(
 
 argparser.add_argument(
     'region_specs',
-    nargs='+',
+    nargs='*',
     type=str,
     metavar='w×h+x+y',
     help="A region specification (width×height+x+y)."
@@ -47,3 +48,21 @@ def parse_region_spec(region_spec):
 
     except (AttributeError, ValueError):
         raise ValueError("Malformed region spec: %s" % region_spec)
+
+
+def parse_region_specs(args):
+
+    regions = []
+    for region_spec in args.region_specs:
+
+        try:
+            region = parse_region_spec(region_spec)
+
+        except ValueError as exc:
+            print(exc, file=sys.stderr)
+            sys.exit(1)
+
+        else:
+            regions.append(region)
+
+    return regions

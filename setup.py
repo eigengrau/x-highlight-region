@@ -4,7 +4,7 @@ import subprocess
 import shlex
 from setuptools import setup
 
-version = '0.2.0.0'
+version = '0.3.0.0'
 
 try:
     hash = (
@@ -32,7 +32,10 @@ setup(
     author="Sebastian Reuße",
     author_email='seb@wirrsal.net',
     url='https://github.com/eigengrau/x-highlight-region',
-    packages=['xhighlight'],
+    packages=[
+        'xhighlight',
+        'xhighlight.cli'
+    ],
     package_dir={'': 'src'},
     install_requires=[
         'pygobject >= 3.18, < 3.19',
