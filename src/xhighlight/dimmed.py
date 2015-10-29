@@ -3,6 +3,8 @@ screen.
 
 """
 
+import math
+
 import cairo
 import gi
 gi.require_version('Gtk', '3.0')
@@ -20,13 +22,13 @@ class Dimmed (Gtk.Window):
         """
 
         super().__init__(Gtk.WindowType.POPUP)
-        self.opacity = opacity
 
         # Be transparent.
         self.set_app_paintable(True)
         screen = self.get_screen()
         visual = screen.get_rgba_visual()
         self.set_visual(visual)
+        self.show_all()
 
         # Set geometry.
         width, height = screen.get_width(), screen.get_height()
@@ -44,35 +46,51 @@ class Dimmed (Gtk.Window):
         # Don’t take focus.
         self.set_accept_focus(False)
         self.set_focus_on_map(False)
-        self.show_all()
         make_mouse_pass_through(self)
 
-        # We manage highlighted regions by masking out parts of a completely
-        # dimmed, screen-sized overlay.
-        overlay = Gtk.Fixed()
-        overlay.connect('draw', self._draw_dim)
-        self.add(overlay)
-        overlay.show_all()
-        make_mouse_pass_through(overlay)
-        self.overlay = overlay
+        # Keep state.
+        self._rectangles = []
+        self._ellipses = []
+        self.opacity = opacity
 
-    def add_clear(self, x, y, width, height):
-        """Clear a region."""
+        self.connect('draw', self._on_draw)
 
-        frame = Gtk.Frame()
-        frame.set_size_request(width, height)
-        frame.connect('draw', self._draw_clear)
-        self.overlay.put(frame, x, y)
-        frame.show_all()
-        make_mouse_pass_through(frame)
+    def _on_draw(self, _wid, ctx):
 
-    def _draw_dim(self, _wid, ctx):
+        ctx.save()
 
+        # Dim everything.
         ctx.set_source_rgba(0, 0, 0, self.opacity)
         ctx.set_operator(cairo.OPERATOR_SOURCE)
         ctx.paint()
 
-    def _draw_clear(self, _wid, ctx):
-
+        # Rectangular highlights.
         ctx.set_operator(cairo.OPERATOR_CLEAR)
-        ctx.paint()
+        for x, y, width, height in self._rectangles:
+
+            ctx.rectangle(x, y, width, height)
+            ctx.fill()
+
+        # Ellipsoid highlights.
+        for x, y, width, height in self._ellipses:
+
+            ctx.save()
+            ctx.translate(x+width/2, y+height/2)
+            ctx.scale(width/2, height/2)
+            ctx.arc(0, 0, 1, 0, math.radians(360))
+            ctx.fill()
+            ctx.restore()
+
+        ctx.restore()
+
+    def clear_rectangle(self, x, y, width, height):
+        """Highlight a rectangular region."""
+
+        self._rectangles.append((x, y, width, height))
+        self.queue_draw()
+
+    def clear_ellipse(self, x, y, width, height):
+        """Highlight an ellipsoid region."""
+
+        self._ellipses.append((x, y, width, height))
+        self.queue_draw()

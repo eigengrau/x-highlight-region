@@ -100,11 +100,13 @@ class ControlReader (threading.Thread):
             pass
 
         else:
-            self.dimmed.add_clear(
-                region['x'],
-                region['y'],
-                region['width'],
-                region['height']
-            )
+            type_ = region['type']
+            region = region['x'], region['y'], region['width'], region['height']
+            if type_ == 'r':
+                self.dimmed.clear_rectangle(*region)
+            elif type_ == 'e':
+                self.dimmed.clear_ellipse(*region)
+            else:
+                raise ValueError("Illegal region spec from queue.")
 
         return True
