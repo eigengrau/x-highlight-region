@@ -33,7 +33,7 @@ Regions intended for highlighting can be conveniently selected using `slop
 
 ::
 
-   alias xhl='xhighlight $(slop -f "%x %y %w %h")'
+   alias xhl='xhighlight $(slop -f %g)'
 
 To conventiently trigger highlighting via a global keyboard-shortcut, please
 refer to a hotkey daemon such as `sxhkd
