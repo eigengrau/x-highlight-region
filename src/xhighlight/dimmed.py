@@ -3,26 +3,24 @@ screen.
 
 """
 
-from ctypes import cdll
-
 import cairo
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
+from xhighlight.util import make_mouse_pass_through
+
 
 class Dimmed (Gtk.Window):
 
-    def __init__(self, x, y, width, height, opacity=.8):
-        """A semi-transparent Gtk window useful to dim the brightness of regions
-        of the screen.
+    def __init__(self, opacity=.8):
+        """A semi-transparent screen overlay which supports masking out clear
+        regions.
 
         """
 
         super().__init__(Gtk.WindowType.POPUP)
         self.opacity = opacity
-
-        self.connect('draw', self.on_draw)
 
         # Be transparent.
         self.set_app_paintable(True)
@@ -31,10 +29,12 @@ class Dimmed (Gtk.Window):
         self.set_visual(visual)
 
         # Set geometry.
+        width, height = screen.get_width(), screen.get_height()
         self.resize(width, height)
-        self.move(x, y)
+        self.move(0, 0)
 
         # Make the window not look like a regular window.
+        self.fullscreen()
         self.set_decorated(False)
         self.set_skip_taskbar_hint(True)
         self.set_skip_pager_hint(True)
@@ -44,27 +44,35 @@ class Dimmed (Gtk.Window):
         # Don’t take focus.
         self.set_accept_focus(False)
         self.set_focus_on_map(False)
-
         self.show_all()
+        make_mouse_pass_through(self)
 
-        # Make our window completely transparent to mouse events. pycairo
-        # doesn’t seem to support interfacing Cairo regions with Gtk, so we
-        # hackishly set the input shape using native calls. This relies on
-        # __hash__ yielding the pointer to the native structure of Gdk windows.
-        libgdk = cdll.LoadLibrary('libgdk-3.so')
-        libcairo = cdll.LoadLibrary('libcairo.so')
-        window = self.get_window()
-        window_pointer = hash(window)
-        region_pointer = libcairo.cairo_region_create()
-        offset = 0, 0
-        libgdk.gdk_window_input_shape_combine_region(
-            window_pointer,
-            region_pointer,
-            *offset
-        )
+        # We manage highlighted regions by masking out parts of a completely
+        # dimmed, screen-sized overlay.
+        overlay = Gtk.Fixed()
+        overlay.connect('draw', self._draw_dim)
+        self.add(overlay)
+        overlay.show_all()
+        make_mouse_pass_through(overlay)
+        self.overlay = overlay
 
-    def on_draw(self, _wid, ctx):
+    def add_clear(self, x, y, width, height):
+        """Clear a region."""
+
+        frame = Gtk.Frame()
+        frame.set_size_request(width, height)
+        frame.connect('draw', self._draw_clear)
+        self.overlay.put(frame, x, y)
+        frame.show_all()
+        make_mouse_pass_through(frame)
+
+    def _draw_dim(self, _wid, ctx):
 
         ctx.set_source_rgba(0, 0, 0, self.opacity)
         ctx.set_operator(cairo.OPERATOR_SOURCE)
+        ctx.paint()
+
+    def _draw_clear(self, _wid, ctx):
+
+        ctx.set_operator(cairo.OPERATOR_CLEAR)
         ctx.paint()
