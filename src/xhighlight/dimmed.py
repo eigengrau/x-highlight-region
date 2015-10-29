@@ -20,13 +20,13 @@ class Dimmed (Gtk.Window):
         """
 
         super().__init__(Gtk.WindowType.POPUP)
-        self.opacity = opacity
 
         # Be transparent.
         self.set_app_paintable(True)
         screen = self.get_screen()
         visual = screen.get_rgba_visual()
         self.set_visual(visual)
+        self.show_all()
 
         # Set geometry.
         width, height = screen.get_width(), screen.get_height()
@@ -44,7 +44,6 @@ class Dimmed (Gtk.Window):
         # Don’t take focus.
         self.set_accept_focus(False)
         self.set_focus_on_map(False)
-        self.show_all()
         make_mouse_pass_through(self)
 
         # We manage highlighted regions by masking out parts of a completely
@@ -55,6 +54,7 @@ class Dimmed (Gtk.Window):
         overlay.show_all()
         make_mouse_pass_through(overlay)
         self.overlay = overlay
+        self.opacity = opacity
 
     def add_clear(self, x, y, width, height):
         """Clear a region."""
