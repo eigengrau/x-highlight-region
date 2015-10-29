@@ -5,6 +5,6 @@ def client(control_path, regions):
         for region in regions:
 
             print(
-                '{width}×{height}+{x}+{y}'.format(**region),
+                '{type}{width}×{height}+{x}+{y}'.format(**region),
                 file=control
             )

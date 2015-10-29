@@ -11,8 +11,11 @@ argparser.add_argument(
     'region_specs',
     nargs='*',
     type=str,
-    metavar='w×h+x+y',
-    help="A region specification (width×height+x+y)."
+    metavar='[r|e]w×h+x+y',
+    help=(
+        "A region specification 'e' for ellipsoid highlights, 'r' for "
+        "rectangular highlights. If the type is not supplied, assume 'r'."
+    )
 )
 
 argparser.add_argument(
@@ -25,6 +28,7 @@ argparser.add_argument(
 
 region_spec_re = re.compile(r"""
     ^
+    (?P<type>r|R|e|E)?
     (?P<width>\d+)
     [×xX]
     (?P<height>\d+)
@@ -41,9 +45,14 @@ def parse_region_spec(region_spec):
     parsed = region_spec_re.match(region_spec)
 
     try:
+        spec = parsed.groupdict()
+        if not spec['type']:
+            spec['type'] = 'r'
+        else:
+            spec['type'] = spec['type'].lower()
         return {
-            k: int(v)
-            for (k, v) in parsed.groupdict().items()
+            k: int(v) if not k == 'type' else v
+            for (k, v) in spec.items()
         }
 
     except (AttributeError, ValueError):

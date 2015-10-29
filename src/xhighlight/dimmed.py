@@ -3,6 +3,8 @@ screen.
 
 """
 
+import math
+
 import cairo
 import gi
 gi.require_version('Gtk', '3.0')
@@ -48,6 +50,7 @@ class Dimmed (Gtk.Window):
 
         # Keep state.
         self._rectangles = []
+        self._ellipses = []
         self.opacity = opacity
 
         self.connect('draw', self._on_draw)
@@ -68,10 +71,26 @@ class Dimmed (Gtk.Window):
             ctx.rectangle(x, y, width, height)
             ctx.fill()
 
+        # Ellipsoid highlights.
+        for x, y, width, height in self._ellipses:
+
+            ctx.save()
+            ctx.translate(x+width/2, y+height/2)
+            ctx.scale(width/2, height/2)
+            ctx.arc(0, 0, 1, 0, math.radians(360))
+            ctx.fill()
+            ctx.restore()
+
         ctx.restore()
 
-    def add_clear(self, x, y, width, height):
+    def clear_rectangle(self, x, y, width, height):
         """Highlight a rectangular region."""
 
         self._rectangles.append((x, y, width, height))
+        self.queue_draw()
+
+    def clear_ellipse(self, x, y, width, height):
+        """Highlight an ellipsoid region."""
+
+        self._ellipses.append((x, y, width, height))
         self.queue_draw()
