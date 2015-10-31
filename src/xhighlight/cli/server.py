@@ -19,8 +19,8 @@ def server(control_path, opacity):
     keybinder.register('<Ctrl>Escape', Gtk.main_quit)
     keybinder.start()
 
-    # Work around bug 622084.
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    signal.signal(signal.SIGTERM, Gtk.main_quit)
+    signal.signal(signal.SIGINT, Gtk.main_quit)
 
     try:
         os.mkfifo(control_path)
