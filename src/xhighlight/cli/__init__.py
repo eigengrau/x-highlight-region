@@ -7,7 +7,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 
-from gi.repository import GLib
+from gi.repository import GLib, Gdk
 from keybinder.keybinder_gtk import KeybinderGtk
 
 from xhighlight.dimmed import Dimmed
@@ -16,7 +16,18 @@ from xhighlight.cli.server import server
 from xhighlight.cli.client import client
 
 
+def ensure_screen_composited():
+
+    root = Gdk.get_default_root_window()
+    screen = root.get_screen()
+    if not screen.is_composited():
+        print("This program requires a composited screen.")
+        sys.exit(1)
+
+
 def console_entry():
+
+    ensure_screen_composited()
 
     args = argparser.parse_args()
     highlight_regions = parse_region_specs(args)
