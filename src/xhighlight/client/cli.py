@@ -2,6 +2,13 @@ import argparse
 import re
 import sys
 
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('Gdk', '3.0')
+
+from xhighlight.client import client
+from xhighlight.util import ensure_screen_composited
+
 
 argparser = argparse.ArgumentParser(
     description="Highlight regions on the screen."
@@ -75,3 +82,11 @@ def parse_region_specs(args):
             regions.append(region)
 
     return regions
+
+
+def console_entry():
+
+    ensure_screen_composited()
+    args = argparser.parse_args()
+    highlight_regions = parse_region_specs(args)
+    client(highlight_regions, args.opacity)

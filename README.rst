@@ -49,6 +49,8 @@ earlier ones.
 Requirements
 ------------
 
-x-highlight-region relies on Gtk+ 3, pycairo, pygobject, and `python3-keybinder
-<https://github.com/LiuLang/python3-keybinder>`__. It can be installed as
-customary, either by invoking ``setup.py``, or using ``pip``.
+x-highlight-region relies on Gtk+ 3, pycairo, pygobject, python-dbus, and
+`python3-keybinder <https://github.com/LiuLang/python3-keybinder>`__. It can be
+installed as customary, either by invoking ``setup.py``, or using ``pip``. Since
+pygobject, python-dbus, and pycairo are not distributed via pypi, these must be
+installed via your distribution’s package manager.
