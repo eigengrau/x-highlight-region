@@ -5,6 +5,7 @@ import time
 import dbus
 
 import xhighlight.server
+from xhighlight.region import Region, Shape
 
 
 def get_server_proxy():
@@ -57,10 +58,21 @@ def client(regions, server_opacity):
 
     for region in regions:
 
-        server.highlight(
-            region['type'],
-            region['x'],
-            region['y'],
-            region['width'],
-            region['height']
+        if region.shape == Shape.rectangular:
+
+            method = server.highlight_rectangle
+
+        elif region.shape == Shape.ellipsoid:
+
+            method = server.highlight_ellipsis
+
+        else:
+
+            raise TypeError("Do not know how to process region: %s" % region)
+
+        method(
+            region.x,
+            region.y,
+            region.width,
+            region.height
         )

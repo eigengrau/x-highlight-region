@@ -9,6 +9,7 @@ import cairo
 from gi.repository import Gtk, Gdk
 
 from xhighlight.util import make_mouse_pass_through
+from xhighlight.region import Region, Shape
 
 
 class Dimmed (Gtk.Window):
@@ -47,8 +48,7 @@ class Dimmed (Gtk.Window):
         make_mouse_pass_through(self)
 
         # Keep state.
-        self._rectangles = []
-        self._ellipses = []
+        self._regions = []
         self.opacity = opacity
 
         self.connect('draw', self._on_draw)
@@ -62,33 +62,42 @@ class Dimmed (Gtk.Window):
         ctx.set_operator(cairo.OPERATOR_SOURCE)
         ctx.paint()
 
-        # Rectangular highlights.
+        # Process highlighted regions.
         ctx.set_operator(cairo.OPERATOR_CLEAR)
-        for x, y, width, height in self._rectangles:
+        for region in self._regions:
 
-            ctx.rectangle(x, y, width, height)
-            ctx.fill()
+            if region.shape == Shape.rectangular:
 
-        # Ellipsoid highlights.
-        for x, y, width, height in self._ellipses:
+                ctx.rectangle(
+                    region.x,
+                    region.y,
+                    region.width,
+                    region.height
+                )
+                ctx.fill()
 
-            ctx.save()
-            ctx.translate(x+width/2, y+height/2)
-            ctx.scale(width/2, height/2)
-            ctx.arc(0, 0, 1, 0, math.radians(360))
-            ctx.fill()
-            ctx.restore()
+            elif region.shape == Shape.ellipsoid:
+
+                ctx.save()
+                ctx.translate(
+                    region.x+region.width/2,
+                    region.y+region.height/2
+                )
+                ctx.scale(region.width/2, region.height/2)
+                ctx.arc(0, 0, 1, 0, math.radians(360))
+                ctx.fill()
+                ctx.restore()
+
+            else:
+
+                raise ValueError(
+                    "Don’t know how to process region: %s" % region
+                )
 
         ctx.restore()
 
-    def clear_rectangle(self, x, y, width, height):
-        """Highlight a rectangular region."""
+    def clear_region(self, region):
+        """Highlight a region on the screen."""
 
-        self._rectangles.append((x, y, width, height))
-        self.queue_draw()
-
-    def clear_ellipse(self, x, y, width, height):
-        """Highlight an ellipsoid region."""
-
-        self._ellipses.append((x, y, width, height))
+        self._regions.append(region)
         self.queue_draw()

@@ -12,6 +12,7 @@ from gi.repository import Gtk, GLib
 from keybinder.keybinder_gtk import KeybinderGtk
 
 from xhighlight.dimmed import Dimmed
+from xhighlight.region import Region, Shape
 
 
 def server(opacity):
@@ -59,26 +60,28 @@ class ControlReader (dbus.service.Object):
         self.read_queue.put(item)
 
     @dbus.service.method('net.wirrsal.xhighlight')
-    def highlight(self, type_, x, y, width, height):
+    def highlight_rectangle(self, x, y, width, height):
 
-        self.put((type_, x, y, width, height))
+        region = Region(Shape.rectangular, x, y, width, height)
+        self.put(region)
+
+    @dbus.service.method('net.wirrsal.xhighlight')
+    def highlight_ellipsis(self, x, y, width, height):
+
+        region = Region(Shape.ellipsoid, x, y, width, height)
+        self.put(region)
 
     def mainloop_handle_queue(self):
 
         # Callback used to read the queue from within the Gtk main loop.
 
         try:
-            type_, *region = self.read_queue.get_nowait()
+            region = self.read_queue.get_nowait()
 
         except queue.Empty:
             pass
 
         else:
-            if type_ == 'r':
-                self.dimmed.clear_rectangle(*region)
-            elif type_ == 'e':
-                self.dimmed.clear_ellipse(*region)
-            else:
-                raise ValueError("Illegal region spec from queue.")
+            self.dimmed.clear_region(region)
 
         return True
