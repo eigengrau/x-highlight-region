@@ -37,7 +37,7 @@ def get_server_proxy(block=False):
         time.sleep(0.1)
 
 
-def client(regions, server_opacity):
+def highlight_regions(regions, server_opacity):
 
     try:
 
@@ -83,3 +83,13 @@ def client(regions, server_opacity):
             region.width,
             region.height
         )
+
+
+def server_quit():
+
+    bus = dbus.SessionBus()
+
+    if bus.name_has_owner('net.wirrsal.xhighlight'):
+
+        server = get_server_proxy()
+        server.server_quit()

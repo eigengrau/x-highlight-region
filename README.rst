@@ -15,7 +15,7 @@ x-highlight-region may be invoked as specified below. To disengage, press
 ::
 
    usage: xhighlight [-h] [--rectangle X Y WIDTH HEIGHT]
-                     [--ellipsis X Y WIDTH HEIGHT] [--opacity OPACITY]
+                     [--ellipsis X Y WIDTH HEIGHT] [--clear] [--opacity OPACITY]
 
    Highlight regions on the screen.
 
@@ -27,6 +27,7 @@ x-highlight-region may be invoked as specified below. To disengage, press
      --ellipsis X Y WIDTH HEIGHT, -e X Y WIDTH HEIGHT
                            highlight an ellipsoid region (may occur multiple
                            times)
+     --clear, -c           clear everything
      --opacity OPACITY, -o OPACITY
                            opacity of the dim overlay (0 ≤ o ≤ 1), where 1 is
                            perfectly opaque

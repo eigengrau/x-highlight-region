@@ -71,6 +71,11 @@ class ControlReader (dbus.service.Object):
         region = Region(Shape.ellipsoid, x, y, width, height)
         self.put(region)
 
+    @dbus.service.method('net.wirrsal.xhighlight')
+    def server_quit(self):
+
+        Gtk.main_quit()
+
     def mainloop_handle_queue(self):
 
         # Callback used to read the queue from within the Gtk main loop.

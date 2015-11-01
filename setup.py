@@ -4,7 +4,7 @@ import subprocess
 import shlex
 from setuptools import setup
 
-version = '0.4.0.1'
+version = '0.4.1.0'
 
 try:
     hash = (

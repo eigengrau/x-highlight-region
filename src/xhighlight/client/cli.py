@@ -4,7 +4,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 
-from xhighlight.client import client
+from xhighlight import client
 from xhighlight.parsing import RegionAction
 from xhighlight.region import Region, Shape
 from xhighlight.util import ensure_screen_composited
@@ -35,6 +35,13 @@ argparser.add_argument(
 )
 
 argparser.add_argument(
+    '--clear', '-c',
+    dest='server_quit',
+    action='store_true',
+    help="clear everything"
+)
+
+argparser.add_argument(
     '--opacity', '-o',
     default=.8,
     type=float,
@@ -46,5 +53,12 @@ def console_entry():
 
     ensure_screen_composited()
     args = argparser.parse_args()
-    highlight_regions = args.rectangles + args.ellipsoids
-    client(highlight_regions, args.opacity)
+
+    if args.server_quit:
+
+        client.server_quit()
+
+    else:
+
+        regions = args.rectangles + args.ellipsoids
+        client.highlight_regions(regions, args.opacity)
