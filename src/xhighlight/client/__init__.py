@@ -8,23 +8,33 @@ import xhighlight.server
 from xhighlight.region import Region, Shape
 
 
-def get_server_proxy():
+def get_server_proxy(block=False):
 
     bus = dbus.SessionBus()
 
-    try:
+    while True:
 
-        server = bus.get_object('net.wirrsal.xhighlight', '/')
-        return server
+        if bus.name_has_owner('net.wirrsal.xhighlight'):
 
-    except dbus.exceptions.DBusException:
+            server = bus.get_object('net.wirrsal.xhighlight', '/')
+            return server
 
-        # python-dbus seems to cache the connection object somehow, and will be
-        # unhappy when we fork() later on in client() if the connection isn’t
-        # closed.
+        if not block:
 
-        bus.close()
-        raise
+            # python-dbus seems to cache the connection object somehow, and will
+            # be unhappy when we fork() later on in client() if the connection
+            # isn’t closed.
+
+            bus.close()
+
+            raise dbus.exceptions.DBusException
+
+        # While we could wait for a NameOwnerChange signal to see when the
+        # server has appeared, dbus-python wants to use the GLib main loop for
+        # this, and odd things will happen when doing so because we used fork().
+        # So instead, we poll manually.
+
+        time.sleep(0.1)
 
 
 def client(regions, server_opacity):
@@ -51,10 +61,7 @@ def client(regions, server_opacity):
 
         else:
 
-            # FIXME: Use signaling via dbus to avoid the race condition
-            # instead.
-            time.sleep(0.1)
-            server = get_server_proxy()
+            server = get_server_proxy(block=True)
 
     for region in regions:
 
