@@ -5,7 +5,7 @@ import time
 import dbus
 
 import xhighlight.server
-from xhighlight.region import Region, Shape
+from xhighlight.region import Shape
 
 
 def get_server_proxy(block=False):
