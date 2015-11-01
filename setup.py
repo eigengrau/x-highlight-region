@@ -4,7 +4,7 @@ import subprocess
 import shlex
 from setuptools import setup
 
-version = '0.3.1.0'
+version = '0.4.0.0'
 
 try:
     hash = (
@@ -34,7 +34,8 @@ setup(
     url='https://github.com/eigengrau/x-highlight-region',
     packages=[
         'xhighlight',
-        'xhighlight.cli'
+        'xhighlight.server',
+        'xhighlight.client'
     ],
     package_dir={'': 'src'},
     install_requires=[
@@ -44,7 +45,8 @@ setup(
     license="GPL3",
     entry_points={
         'console_scripts': [
-            'xhighlight = xhighlight.cli:console_entry'
+            'xhighlight-server = xhighlight.server.cli:console_entry',
+            'xhighlight = xhighlight.client.cli:console_entry'
         ],
     }
 )
