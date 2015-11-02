@@ -5,8 +5,8 @@ x-highlight-region dims everything but selected regions on the screen. It is
 meant to be of use when giving presentations or when recording screencasts.
 
 
-.. image:: http://i.imgur.com/vt7koWb.gif
-   :target: https://youtu.be/_-tczhQAHo0
+.. image:: http://i.imgur.com/CjXPAcz.gif
+   :target: https://youtu.be/AvvlQfOCBVw
 
 
 Usage

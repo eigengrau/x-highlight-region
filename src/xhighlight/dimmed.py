@@ -14,7 +14,7 @@ from xhighlight.region import Region, Shape
 
 class Dimmed (Gtk.Window):
 
-    def __init__(self, opacity=.8):
+    def __init__(self, opacity=.6):
         """A semi-transparent screen overlay which supports masking out clear
         regions.
 

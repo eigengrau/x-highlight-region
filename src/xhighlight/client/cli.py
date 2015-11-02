@@ -43,7 +43,7 @@ argparser.add_argument(
 
 argparser.add_argument(
     '--opacity', '-o',
-    default=.8,
+    default=.6,
     type=float,
     help="opacity of the dim overlay (0 ≤ o ≤ 1), where 1 is perfectly opaque"
 )
