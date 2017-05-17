@@ -1,7 +1,5 @@
-"""Make the screen flash.
+"""Dim everything but a selected region of the screen.
 
-flash-screen makes the screen flash and emits a shutter sound. It is intended to
-complement custom screenshotting scripts built around maim, to provide visual
-feedback when a screenshot has been triggered.
-
+x-highlight-region dims everything but selected regions on the screen. It is
+meant to be of use when giving presentations or when recording screencasts.
 """
