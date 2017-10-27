@@ -8,7 +8,6 @@ import math
 import cairo
 from gi.repository import Gtk, Gdk
 
-from xhighlight.util import make_mouse_pass_through
 from xhighlight.region import Region, Shape
 
 
@@ -45,7 +44,7 @@ class Dimmed (Gtk.Window):
         # Don’t take focus.
         self.set_accept_focus(False)
         self.set_focus_on_map(False)
-        make_mouse_pass_through(self)
+        self.input_shape_combine_region(cairo.Region())
 
         # Keep state.
         self._regions = []
