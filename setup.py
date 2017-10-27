@@ -39,7 +39,7 @@ setup(
     ],
     package_dir={'': 'src'},
     install_requires=[
-        'pygobject >= 3.18, < 3.25',
+        'pygobject >= 3.18, < 3.27',
         'python3-keybinder >= 1.1, < 1.2'
     ],
     license="GPL3",
