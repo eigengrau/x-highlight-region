@@ -25,5 +25,9 @@
           keybinder = pkgs.keybinder;
         };
         defaultPackage = packages.x-highlight-region;
+        defaultApp = {
+          type = "app";
+          program = "${packages.x-highlight-region}/bin/xhighlight";
+        };
       }));
 }
