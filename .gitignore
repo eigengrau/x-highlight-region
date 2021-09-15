@@ -5,3 +5,6 @@ dist/
 pip-selfcheck.json
 __pycache__/
 *.egg-info/
+
+# Nix
+result
