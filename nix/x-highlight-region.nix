@@ -1,22 +1,13 @@
-{ pkgs }:
-pkgs.python38Packages.buildPythonApplication {
+{ atk, cairo, gtk3, gdk-pixbuf, gobject-introspection, pango, wrapGAppsHook
+, python3Packages }:
+python3Packages.buildPythonApplication {
   pname = "x-highlight-region";
   version = "0.4.1.1";
-  nativeBuildInputs = (with pkgs; [
-    atk
-    cairo
-    gdk-pixbuf
-    gobject-introspection
-    pango
-    wrapGAppsHook
-  ]);
-  propagatedBuildInputs = (with pkgs.python38Packages; [
-    pygobject3
-    pycairo
-    dbus-python
-    xlib
-    keybinder
-  ]) ++ (with pkgs; [ gtk3 ]);
+  nativeBuildInputs =
+    [ atk cairo gdk-pixbuf gobject-introspection pango wrapGAppsHook ];
+  propagatedBuildInputs =
+    (with python3Packages; [ pygobject3 pycairo dbus-python xlib keybinder ])
+    ++ [ gtk3 ];
   src = ../.;
   preFixup = ''
     makeWrapperArgs+=(
