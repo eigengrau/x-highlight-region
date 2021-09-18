@@ -1,4 +1,4 @@
-{ lib, python3Packages, ... }:
+{ lib, python3Packages }:
 python3Packages.buildPythonPackage rec {
   pname = "python3-keybinder";
   version = "1.1.2";
