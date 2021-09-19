@@ -11,8 +11,10 @@
           inherit system;
           overlays = [
             (final: prev: {
-              python38Packages = prev.python38Packages // {
-                keybinder = final.callPackage ./nix/keybinder.nix { };
+              python3 = prev.python3.override {
+                packageOverrides = (final-python: prev-python: {
+                  keybinder = final-python.callPackage ./nix/keybinder.nix { };
+                });
               };
               x-highlight-region =
                 final.callPackage ./nix/x-highlight-region.nix { };
