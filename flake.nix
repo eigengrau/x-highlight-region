@@ -24,7 +24,7 @@
       in rec {
         packages = {
           x-highlight-region = pkgs.x-highlight-region;
-          keybinder = pkgs.keybinder;
+          python3 = pkgs.python3;
         };
         defaultPackage = packages.x-highlight-region;
         defaultApp = {
