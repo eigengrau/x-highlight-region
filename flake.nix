@@ -22,14 +22,15 @@
           ];
         };
       in rec {
-        packages = {
+        packages = rec {
+          default = x-highlight-region;
           x-highlight-region = pkgs.x-highlight-region;
-          python3 = pkgs.python3;
         };
-        defaultPackage = packages.x-highlight-region;
-        defaultApp = {
-          type = "app";
-          program = "${packages.x-highlight-region}/bin/xhighlight";
+        apps = {
+          default = {
+            type = "app";
+            program = "${packages.x-highlight-region}/bin/xhighlight";
+          };
         };
       }));
 }
